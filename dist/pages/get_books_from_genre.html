@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Book Collection</title>
+		<link rel="stylesheet" href="book_genre.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+			integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+			crossorigin="anonymous"
+		/>
+	</head>
+	<body style="background-color: #f8f8f8">
+		<div class="header">
+			<h1 id="head">List of Books</h1>
+		</div>
+		<div class="container mt30">
+			<div class="wrapper">
+				<div class="stage clearfix" id="bookContainer">
+					<!-- Book data will be dynamically inserted here -->
+				</div>
+			</div>
+		</div>
+		<script>
+			var name = localStorage.getItem("otp");
+			console.log("nav", name);
+			var length = 0;
+			const url = `https://localhost:7006/api/Books/search-books?search=${encodeURIComponent(
+				name
+			)}`;
+			head.innerText = "Genre: " + name;
+			// Fetch book data from API
+			fetch(url)
+				.then((response) => response.json())
+				.then((data) => {
+					const bookContainer =
+						document.getElementById("bookContainer");
+					length = data.body.length;
+					data.body.forEach((book, ele) => {
+						const li = document.createElement("div");
+						li.classList.add("scene");
+						li.innerHTML = `
+			              <div class="movie" onclick="return true">
+			                <div class="poster">
+			                  <img class="posterbackground" src="${book.imageUrl}" onerror="this.onerror='https://cdn.dribbble.com/users/1044993/screenshots/5564939/geek-owl_dribbble.png'; this.src='https://cdn.dribbble.com/users/1044993/screenshots/5564939/geek-owl_dribbble.png'" alt="Book Poster">
+			                </div>
+			                <div class="info">
+			                  <header>
+			                    <img class="headerbackground" src="${book.imageUrl}" alt="Book Poster">
+			                    <h1>${book.author}</h1>
+			                </div>
+			              </div>
+			            `;
+						const title = document.createElement("p");
+						title.textContent = book.title;
+						li.appendChild(title);
+
+						bookContainer.appendChild(li);
+					});
+					var a = setInterval(() => {
+						if (
+							length > 0 &&
+							document.querySelectorAll(".scene").length ===
+								length
+						) {
+							document
+								.querySelectorAll(".scene")
+								.forEach((ele, i) => {
+									const imgwidth = document.querySelectorAll(
+										"img.posterbackground"
+									)[i].naturalWidth;
+									if (imgwidth === 1) {
+										document.querySelectorAll(
+											"img.posterbackground"
+										)[i].src =
+											"https://cdn.dribbble.com/users/1044993/screenshots/5564939/geek-owl_dribbble.png";
+										document.querySelectorAll(
+											"img.headerbackground"
+										)[i].src =
+											"https://cdn.dribbble.com/users/1044993/screenshots/5564939/geek-owl_dribbble.png";
+									}
+								});
+							clearInterval(a);
+						}
+					}, 100);
+				})
+				.catch((error) => console.log(error));
+		</script>
+	</body>
+</html>

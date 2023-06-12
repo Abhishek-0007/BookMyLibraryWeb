@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Book Collection</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+            integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    </head> 
+        <div class="navbar">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="container">  
+		</div>
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="search input-group col-md-6" style="padding: 3% 0%; max-width: 50%;">
+                    <input type="text" id="searchInput" class="form-control rounded" placeholder="Search">
+                    <button id="searchButton" class="btn btn-success">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="bookContainer" class="myResult">
+        </div>
+    <div class="book" id = "loader">
+        <div class="book__pg-shadow"></div>
+        <div class="book__pg"></div>
+        <div class="book__pg book__pg--2"></div>
+        <div class="book__pg book__pg--3"></div>
+        <div class="book__pg book__pg--4"></div>
+        <div class="book__pg book__pg--5"></div>
+    </div> 
+
+        <script>
+            const searchButton = document.getElementById('searchButton'); 
+
+            searchButton.addEventListener('click', () => {
+                document.getElementById('bookContainer').innerHTML = "";
+                showDiv("loader");
+                setTimeout(() => { 
+                    getApi();
+                }, 500);
+                
+
+            });
+            function hideDiv(id) {
+                var div = document.getElementById(id);
+                div.style.display = div.style.display == "none" ? "block" : "none";
+            }
+            
+            function showDiv(id) {
+                var div = document.getElementById(id);
+                div.style.display = div.style.display == "block" ? "none" : "block";
+            }
+            function getApi() { 
+
+                const searchInput = document.getElementById('searchInput').value;
+                const url = `https://localhost:7006/api/Books/search-books?search=${encodeURIComponent(searchInput)}`;
+
+                // Fetch book data from API
+                fetch(url)
+                    .then(response => response.json()) 
+                    .then(data => {
+                        const bookContainer = document.getElementById('bookContainer');
+                        bookContainer.innerHTML = "";
+                        hideDiv("loader");
+                        // Iterate over each book in the data
+                        data.body.forEach(book => {
+                            // Create a box element for each book
+                            const box = document.createElement('div');
+                            box.classList.add('box');
+
+                            // Create thumbnail image element
+                            const thumbnail = document.createElement('img');
+                            thumbnail.classList.add('thumbnail');
+                            thumbnail.src = book.imageUrl;
+                            box.appendChild(thumbnail);
+
+                            // Create book title element
+                            const title = document.createElement('p');
+                            title.textContent = book.title;
+                            box.appendChild(title);
+
+                            // Add the box to the container
+                            bookContainer.appendChild(box);
+                        }
+                        );
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+
+        </script>
+    </body>
+
+</html>

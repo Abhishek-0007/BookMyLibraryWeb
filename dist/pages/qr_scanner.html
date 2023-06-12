@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+	</head>
+	<body>
+		<!-- Include Bootstrap for styling -->
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+		/>
+		<div class="container">
+			<link rel="stylesheet" href="qr.css" />
+			<div class="wrapper">
+				<div class="banner-image">
+					<div class="container-fluid">
+						<div class="text-center">
+							<main>
+								<div id="qrcode"></div>
+							</main>
+						</div>
+					</div>
+					<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+				</div>
+				<h1>QR Code</h1>
+			</div>
+		</div>
+
+		<script>
+			window.onload = function (e) {
+				// qrscan(Math.floor(1000 + Math.random() * 9000));
+				var qrcode = new QRCode(
+					"qrcode",
+					Math.floor(1000 + Math.random() * 9000).toString()
+				);
+			};
+
+			function qrscan(value) {
+				debugger;
+				let finalURL =
+					"https://chart.googleapis.com/chart?cht=qr&chl=" +
+					value +
+					"&chs=160x160&chld=L|0";
+				$(".qr-code").attr("src", finalURL);
+				$('<div><img src="' + finalURL + '"/></div>').appendTo(
+					$("#banner-image")
+				);
+			}
+		</script>
+	</body>
+</html>
